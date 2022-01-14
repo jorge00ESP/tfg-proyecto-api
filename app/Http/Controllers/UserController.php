@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -43,7 +44,7 @@ class UserController extends Controller
         }
     }
 
-    public function deleteUser(Request $request, $id) {
+    public function deleteUser($id) {
 
         $user = DB::table('users')->where('id', $id)->first();
         if ($user === null) {
@@ -77,14 +78,50 @@ class UserController extends Controller
     }
 
     public function updateUser(Request $request, $id){
+
+        $validation = $request->validate([
+            'nombre' => 'required|string|max:32',
+            'apellido' =>  'string|max:32',
+            'password'=> 'string|max:255',
+            'email'=> 'email:rfc,dns|max:255',
+            'id_rol'=>'numeric|digits:1'
+        ]);
+
+        if (!$validation){
+            return response()->json(null, 403);
+        }
+
+        dd($validation);
+
         $data=$request->only(['nombre', 'apellido', 'password', 'email', 'id_rol']);
 
-        if($data['id_rol']<2 || $data['id_rol']>5){
+        $user=User::find($id);
+
+        if($user==null){
             return response()->json([
-                'success' => true,
+                'success' => false,
+                'mensaje' => 'No existe este usuario',
+                'data'    => null
+            ]);
+        }
+
+
+
+        $nombre=$data['nombre'];
+        $apellido=$data['apellido'];
+        $password=$data['password'];
+        $email=$data['email'];
+        $id_rol=$data['id_rol'];
+
+        if($id_rol<1 || $id_rol>4){
+            return response()->json([
+                'success' => false,
                 'mensaje' => 'No existe este rol',
                 'data'    => null
             ]);
         }
+
+        return response()->json($user, 200);
+
     }
 }
