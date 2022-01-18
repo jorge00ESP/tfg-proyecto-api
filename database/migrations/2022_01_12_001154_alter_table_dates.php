@@ -14,7 +14,7 @@ class AlterTableDates extends Migration
     public function up()
     {
         Schema::table('dates', function (Blueprint $table) {
-            $table->string('description');
+            $table->string('descripcion')->nullable();
         });
     }
 

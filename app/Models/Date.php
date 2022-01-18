@@ -9,12 +9,11 @@ class Date extends Model
 {
     use HasFactory;
 
-
     public function user_trabajador(){
-        return $this->hasOne(User::class, 'id_trabajador');
+        return $this->hasOne(User::class, 'id_trabajador', 'id');
     }
 
     public function user_cliente(){
-        return $this->hasOne(User::class, 'id_cliente');
+        return $this->hasOne(User::class, 'id_cliente', 'id');
     }
 }

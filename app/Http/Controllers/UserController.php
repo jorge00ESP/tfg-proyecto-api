@@ -28,6 +28,14 @@ class UserController extends Controller
             'id_rol'=>'required|integer|digits_between:0,3'
         ]);
 
+        if($data['id_rol']<1 || $data['id_rol']>4){
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No existe este rol',
+                'data'    => null
+            ]);
+        }
+
         try{
             DB::table('users')->insert($data);
             return response()->json([
@@ -80,18 +88,18 @@ class UserController extends Controller
     public function updateUser(Request $request, $id){
 
         $validation = $request->validate([
-            'nombre' => 'required|string|max:32',
-            'apellido' =>  'string|max:32',
-            'password'=> 'string|max:255',
-            'email'=> 'email:rfc,dns|max:255',
-            'id_rol'=>'numeric|digits:1'
+            'nombre' => 'nullable|string|max:32',
+            'apellido' =>  'nullable|string|max:32',
+            'password'=> 'nullable|string|max:255',
+            'email'=> 'nullable|email:rfc,dns|max:255',
+            'id_rol'=>'nullable|numeric|digits:1'
         ]);
 
         if (!$validation){
             return response()->json(null, 403);
         }
 
-        dd($validation);
+        //dd($validation);
 
         $data=$request->only(['nombre', 'apellido', 'password', 'email', 'id_rol']);
 
@@ -105,23 +113,51 @@ class UserController extends Controller
             ]);
         }
 
-
-
         $nombre=$data['nombre'];
         $apellido=$data['apellido'];
         $password=$data['password'];
         $email=$data['email'];
         $id_rol=$data['id_rol'];
 
-        if($id_rol<1 || $id_rol>4){
-            return response()->json([
-                'success' => false,
-                'mensaje' => 'No existe este rol',
-                'data'    => null
-            ]);
+        $data=[];
+
+        if(!empty($id_rol)){
+            if($id_rol<1 || $id_rol>4){
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'No existe este rol',
+                    'data'    => null
+                ]);
+            }else{
+                $data['id_rol']=$id_rol;
+            }
         }
+
+        if(!empty($nombre)){
+            $data['nombre']=$nombre;
+        }
+
+        if(!empty($apellido)){
+            $data['apellido']=$apellido;
+        }
+
+        if(!empty($password)){
+            $data['password']=$password;
+        }
+
+        if(!empty($email)){
+            $data['email']=$email;
+        }
+
+        User::where('id', $id)->update($data);
+
+        $user=User::find($id);
 
         return response()->json($user, 200);
 
+    }
+
+    public function getDates(){
+        //en desarrollo
     }
 }
