@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Date;
+use App\Models\User;
 
 class DateController extends Controller
 {
-    public function createDate(Request $request){
+    public function create(Request $request){
         $data=$request->only(['id_trabajador', 'id_cliente', 'hora', 'fecha', 'descripcion']);
 
         $request->validate([
@@ -35,7 +36,7 @@ class DateController extends Controller
         }
     }
 
-    public function deleteDate($id){
+    public function delete($id){
         $date = DB::table('dates')->where('id', $id)->first();
         if ($date === null) {
             return response()->json([
@@ -61,7 +62,21 @@ class DateController extends Controller
             return Date::find($id);
     }
 
-    public function getDateUsers(){
-        //en desarrollo
+    public function getDateUsers($id){
+        $user=User::find($id);
+
+        if($user==null){
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No existe este usuario',
+                'data'    => null
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Citas recogidas',
+            'data' =>  Date::where('id_trabajador',$id)->orWhere('id_cliente',$id)->get()
+        ], 200);
     }
 }

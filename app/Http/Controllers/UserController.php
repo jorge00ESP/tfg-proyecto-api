@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Date;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +15,20 @@ class UserController extends Controller
     }
 
     public function get($id){
-        return User::find($id);
+        $user=User::find($id);
+
+        if($user==null){
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No existe este usuario',
+                'data'    => null
+            ]);
+        }
+
+        return $user->toJson();
     }
 
-    public function createUser(Request $request){
+    public function create(Request $request){
         $data=$request->only(['nombre', 'apellido', 'password', 'email', 'id_rol']);
 
         $request->validate([
@@ -52,9 +63,10 @@ class UserController extends Controller
         }
     }
 
-    public function deleteUser($id) {
+    public function delete($id) {
 
         $user = DB::table('users')->where('id', $id)->first();
+
         if ($user === null) {
             return response()->json([
                 'success' => false,
@@ -72,7 +84,7 @@ class UserController extends Controller
 
     }
 
-    public function getRolUser($id){
+    public function rol($id){
         $user = User::find($id);
         if($user === null) return 'El usuario no EXISTE';
 
@@ -85,7 +97,8 @@ class UserController extends Controller
         return $user->role->toJson();
     }
 
-    public function updateUser(Request $request, $id){
+    public function update(Request $request, $id){
+        $data=$request->only(['nombre', 'apellido', 'password', 'email', 'id_rol']);
 
         $validation = $request->validate([
             'nombre' => 'nullable|string|max:32',
@@ -157,7 +170,18 @@ class UserController extends Controller
 
     }
 
-    public function getDates(){
-        //en desarrollo
+    public function task($id){
+        $user=User::find($id);
+
+        if($user==null){
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No existe este usuario',
+                'data'    => null
+            ]);
+        }
+
+        return $user->tasks;
     }
+
 }
