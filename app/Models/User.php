@@ -44,14 +44,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    //FUNCIONA
     public function role(){
         return $this->belongsTo(Role::class, 'id_rol', 'id');
     }
 
-    //FUNCIONA
     public function tasks(){
         return $this->hasMany(Task::class, 'id_usuario');
     }
 
+    //PROBAR
+    public function emisor(){
+        return $this->hasMany(Messages::class, 'id_user_emisor');
+    }
+
+    //PROBAR
+    public function receptor(){
+        return $this->hasMany(Messages::class, 'id_user_receptor');
+    }
 }
