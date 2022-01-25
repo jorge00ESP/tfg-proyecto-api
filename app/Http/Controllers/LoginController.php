@@ -14,14 +14,26 @@ class LoginController extends Controller
         ]);
 
         if(Auth::check()){
-            return 'checkeame esta bro';
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Ya hay un usuario logueado',
+                'data'    => null
+            ], 400);
         }
 
         if(Auth::attempt($credentials)){
-            return Auth::user()->toJson();
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'SESION INICIADA',
+                'data'    => Auth::user()
+            ]);
         }
 
-        return 'no me he logueado';
+        return response()->json([
+            'success' => false,
+            'mensaje' => 'No se ha podido loguear',
+            'data'    => null
+        ], 400);
     }
 
     public function logout(){
@@ -40,6 +52,16 @@ class LoginController extends Controller
         return response()->json([
             'success' => true,
             'mensaje' => 'El usuario ha cerrado la sesion',
+            'data'    => $user
+        ]);
+    }
+
+    public function getData(){
+        $user=Auth::user();
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'DATOS DE USUARIO',
             'data'    => $user
         ]);
     }
