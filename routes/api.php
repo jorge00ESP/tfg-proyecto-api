@@ -11,6 +11,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Middleware\Sesion;
 use App\Http\Controllers\ErrorController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,5 +102,17 @@ Route::prefix('login')->group(function (){
     Route::post('logout', [LoginController::class, 'logout']);
     Route::middleware(Sesion::class)->group(function (){
         Route::post('data-user', [LoginController::class, 'getData']);
+    });
+});
+
+Route::prefix('product')->group(function (){
+    Route::middleware(Sesion::class)->group(function (){
+       Route::post('create', [ProductController::class, 'create']);
+       Route::get('', [ProductController::class, 'getAll']);
+
+        Route::prefix('{id}')->group(function (){
+            Route::get('', [ProductController::class, 'get']);
+            Route::delete('delete', [ProductController::class, 'delete']);
+        });
     });
 });
