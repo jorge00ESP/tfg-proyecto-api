@@ -11,6 +11,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Middleware\Sesion;
 use App\Http\Controllers\ErrorController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,10 +91,45 @@ Route::prefix('task')->group(function (){
 });
 
 Route::prefix('message')->group(function (){
-    Route::post('create', [MessagesController::class, 'create']);
+    Route::middleware(Sesion::class)->group(function (){
+        Route::post('create', [MessagesController::class, 'create']);
+        Route::post('get', [MessagesController::class, 'get']);
+        Route::post('look', [MessagesController::class, 'look']);
+    });
 });
 
 Route::prefix('login')->group(function (){
     Route::post('', [LoginController::class, 'login']);
     Route::post('logout', [LoginController::class, 'logout']);
+    Route::middleware(Sesion::class)->group(function (){
+        Route::post('data-user', [LoginController::class, 'getData']);
+    });
+});
+
+Route::prefix('product')->group(function (){
+    Route::middleware(Sesion::class)->group(function (){
+       Route::post('create', [ProductController::class, 'create']);
+       Route::get('', [ProductController::class, 'getAll']);
+
+        Route::prefix('{id}')->group(function (){
+            Route::get('', [ProductController::class, 'get']);
+            Route::delete('delete', [ProductController::class, 'delete']);
+            Route::patch('update', [ProductController::class, 'update']);
+            Route::get('category', [ProductController::class, 'category']);
+        });
+    });
+});
+
+Route::prefix('category')->group(function (){
+    Route::middleware(Sesion::class)->group(function (){
+        Route::post('create', [CategoryController::class, 'create']);
+        Route::get('', [CategoryController::class, 'getAll']);
+
+        Route::prefix('{id}')->group(function (){
+            Route::get('', [CategoryController::class, 'get']);
+            Route::delete('delete', [CategoryController::class, 'delete']);
+            Route::patch('update', [CategoryController::class, 'update']);
+            Route::get('products', [CategoryController::class, 'products']);
+        });
+    });
 });

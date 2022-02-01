@@ -51,14 +51,4 @@ class User extends Authenticatable
     public function tasks(){
         return $this->hasMany(Task::class, 'id_usuario');
     }
-
-    //PROBAR
-    public function emisor(){
-        return $this->hasMany(Messages::class, 'id_user_emisor');
-    }
-
-    //PROBAR
-    public function receptor(){
-        return $this->hasMany(Messages::class, 'id_user_receptor');
-    }
 }

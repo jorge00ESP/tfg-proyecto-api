@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     public function getAll(){
-        return User::all()->toJson();
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Usuario creado con exito',
+            'data'    => User::all()
+        ], 200);
     }
 
     public function get($id){
@@ -22,10 +26,14 @@ class UserController extends Controller
                 'success' => false,
                 'mensaje' => 'No existe este usuario',
                 'data'    => null
-            ]);
+            ], 400);
         }
 
-        return $user->toJson();
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Usuario recogido',
+            'data'    => $user
+        ], 200);
     }
 
     public function create(Request $request){
