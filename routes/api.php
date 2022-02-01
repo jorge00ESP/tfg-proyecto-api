@@ -12,6 +12,7 @@ use App\Http\Controllers\MessagesController;
 use App\Http\Middleware\Sesion;
 use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +114,22 @@ Route::prefix('product')->group(function (){
         Route::prefix('{id}')->group(function (){
             Route::get('', [ProductController::class, 'get']);
             Route::delete('delete', [ProductController::class, 'delete']);
+            Route::patch('update', [ProductController::class, 'update']);
+            Route::get('category', [ProductController::class, 'category']);
+        });
+    });
+});
+
+Route::prefix('category')->group(function (){
+    Route::middleware(Sesion::class)->group(function (){
+        Route::post('create', [CategoryController::class, 'create']);
+        Route::get('', [CategoryController::class, 'getAll']);
+
+        Route::prefix('{id}')->group(function (){
+            Route::get('', [CategoryController::class, 'get']);
+            Route::delete('delete', [CategoryController::class, 'delete']);
+            Route::patch('update', [CategoryController::class, 'update']);
+            Route::get('products', [CategoryController::class, 'products']);
         });
     });
 });

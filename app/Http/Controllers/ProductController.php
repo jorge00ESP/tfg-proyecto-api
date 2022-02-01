@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -84,70 +85,69 @@ class ProductController extends Controller
     public function update(Request $request, $id){
         $data=$request->only(['nombre', 'precio', 'cantidad', 'descripcion', 'id_categoria']);
 
-        $validation = $request->validate([
-            'nombre' => 'required|string|max:20',
-            'precio'=> 'required|numeric',
-            'cantidad'=> 'required|integer',
+        $request->validate([
+            'nombre' => 'nullable|string|max:20',
+            'precio'=> 'nullable|numeric',
+            'cantidad'=> 'nullable|integer',
             'descripcion'=>'nullable|string|max:100',
             'id_categoria'=>'nullable|integer'
         ]);
 
-        if (!$validation){
-            return response()->json(null, 403);
-        }
-
-        //dd($validation);
-
-       /* $user=User::find($id);
-
-        if($user==null){
-            return response()->json([
-                'success' => false,
-                'mensaje' => 'No existe este usuario',
-                'data'    => null
-            ]);
-        }*/
-
         $nombre=$data['nombre'];
-        $apellido=$data['apellido'];
-        $password=$data['password'];
-        $email=$data['email'];
-        $id_rol=$data['id_rol'];
+        $precio=$data['precio'];
+        $cantidad=$data['cantidad'];
+        $descripcion=$data['descripcion'];
+        $id_categoria=$data['id_categoria'];
 
         $data=[];
 
-        if(!empty($id_rol)){
-            if($id_rol<1 || $id_rol>4){
+        if(!empty($id_categoria)){
+            $categoria=Category::find($id_categoria);
+            if($categoria==null){
                 return response()->json([
                     'success' => false,
-                    'mensaje' => 'No existe este rol',
-                    'data'    => null
-                ]);
-            }else{
-                $data['id_rol']=$id_rol;
+                    'mensaje' => 'La categoria no existe',
+                    'data'    => null,
+                ], 400);
             }
+
+            $data['id_categoria']=$categoria['id'];
         }
 
         if(!empty($nombre)){
             $data['nombre']=$nombre;
         }
 
-        if(!empty($apellido)){
-            $data['apellido']=$apellido;
+        if(!empty($precio)){
+            $data['precio']=$precio;
         }
 
-        if(!empty($password)){
-            $data['password']=$password;
+        if(!empty($cantidad)){
+            $data['cantidad']=$cantidad;
         }
 
-        if(!empty($email)){
-            $data['email']=$email;
+        if(!empty($descripcion)){
+            $data['descripcion']=$descripcion;
         }
 
-        User::where('id', $id)->update($data);
+        Product::where('id', $id)->update($data);
 
-        $user=User::find($id);
+        $producto=Product::find($id);
 
-        return response()->json($user, 200);
+        return response()->json($producto, 200);
+    }
+
+    public function category($id){
+        $product=Product::find($id);
+
+        if($product==null){
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No existe esta categoria',
+                'data'    => null
+            ]);
+        }
+
+        return $product->category;
     }
 }
