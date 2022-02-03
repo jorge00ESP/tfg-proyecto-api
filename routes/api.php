@@ -13,6 +13,8 @@ use App\Http\Middleware\Sesion;
 use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +132,31 @@ Route::prefix('category')->group(function (){
             Route::delete('delete', [CategoryController::class, 'delete']);
             Route::patch('update', [CategoryController::class, 'update']);
             Route::get('products', [CategoryController::class, 'products']);
+        });
+    });
+});
+
+Route::prefix('provider')->group(function (){
+    Route::middleware(Sesion::class)->group(function (){
+        Route::post('create', [ProviderController::class, 'create']);
+        Route::get('', [ProviderController::class, 'getAll']);
+
+        Route::prefix('{id}')->group(function (){
+            Route::get('', [ProviderController::class, 'get']);
+            Route::delete('delete', [ProviderController::class, 'delete']);
+            Route::patch('update', [ProviderController::class, 'update']);
+            Route::get('invoices', [ProviderController::class, 'invoices']);
+        });
+    });
+});
+
+Route::prefix('invoice')->group(function (){
+    Route::middleware(Sesion::class)->group(function (){
+        Route::post('create', [InvoiceController::class, 'create']);
+
+        Route::prefix('{id}')->group(function (){
+            Route::get('', [InvoiceController::class, 'get']);
+            Route::get('provider', [InvoiceController::class, 'empresa']);
         });
     });
 });
