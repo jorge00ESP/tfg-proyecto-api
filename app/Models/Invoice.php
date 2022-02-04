@@ -12,4 +12,8 @@ class Invoice extends Model
     public function empresa(){
         return $this->belongsTo(Provider::class, 'id_empresa', 'id');
     }
+
+    public function lineas(){
+        return $this->hasMany(Line::class, 'invoice_id');
+    }
 }

@@ -68,4 +68,38 @@ class InvoiceController extends Controller
         return $factura->empresa;
     }
 
+    public function lineas($id){
+        $factura=Invoice::find($id);
+
+        if($factura==null){
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No existe esta factura',
+                'data'    => null
+            ]);
+        }
+
+        return $factura->lineas;
+    }
+
+    public function getFull($id){
+        $invoice=Invoice::find($id);
+
+        if($invoice==null){
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No existe esta factura',
+                'data'    => null
+            ], 400);
+        }
+
+        $invoice['lines']=$invoice->lineas;
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Empresa recogida',
+            'data'    => $invoice
+        ], 200);
+    }
+
 }
