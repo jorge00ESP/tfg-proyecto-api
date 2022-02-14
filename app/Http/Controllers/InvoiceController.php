@@ -93,7 +93,7 @@ class InvoiceController extends Controller
             ], 400);
         }
 
-        $invoice['lines']=$invoice->lineas;
+        $invoice['lineas']=$invoice->lineas;
 
         return response()->json([
             'success' => true,
