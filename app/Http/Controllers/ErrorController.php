@@ -11,6 +11,6 @@ class ErrorController extends Controller
             'success' => false,
             'message' => 'No has iniciado sesion',
             'data' => null
-        ], 400);
+        ], 401);
     }
 }

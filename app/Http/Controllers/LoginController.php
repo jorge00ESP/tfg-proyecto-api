@@ -9,8 +9,9 @@ class LoginController extends Controller
 {
     public function login(Request $request){
         $credentials=$request->validate([
-            'email' => 'required|email:rfc,dns|max:64',
-            'password' => 'required|max:255'
+            'email' => 'nullable',
+            'nombre'=> 'nullable',
+            'password' => 'required'
         ]);
 
         if(Auth::check()){
@@ -21,11 +22,25 @@ class LoginController extends Controller
             ], 400);
         }
 
-        if(Auth::attempt($credentials)){
+        $datosLogin['password']=$credentials['password'];
+
+        if($credentials['email']==null){
+            $datosLogin['nombre']=$credentials['nombre'];
+        }
+
+        if($credentials['nombre']==null){
+            $datosLogin['email']=$credentials['email'];
+        }
+
+        if(Auth::attempt($datosLogin)){
+            $user=Auth::user();
             return response()->json([
                 'success' => true,
                 'mensaje' => 'SESION INICIADA',
-                'data'    => Auth::user()
+                'data'    => [
+                    $user,
+                    $user->createToken('loginController')->accessToken
+                ]
             ]);
         }
 
@@ -58,6 +73,8 @@ class LoginController extends Controller
 
     public function getData(){
         $user=Auth::user();
+
+        dd($user);
 
         return response()->json([
             'success' => true,

@@ -94,7 +94,7 @@ Route::prefix('task')->group(function (){
 });
 
 Route::prefix('message')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::post('create', [MessagesController::class, 'create']);
         Route::post('get', [MessagesController::class, 'get']);
         Route::post('look', [MessagesController::class, 'look']);
@@ -104,7 +104,7 @@ Route::prefix('message')->group(function (){
 Route::prefix('login')->group(function (){
     Route::post('', [LoginController::class, 'login']);
     Route::post('logout', [LoginController::class, 'logout']);
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::post('data-user', [LoginController::class, 'getData']);
     });
 });
