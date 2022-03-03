@@ -39,7 +39,7 @@ class LoginController extends Controller
                 'mensaje' => 'SESION INICIADA',
                 'data'    => [
                     $user,
-                    $user->createToken('loginController')->accessToken
+                    $user->createToken('')->accessToken
                 ]
             ]);
         }

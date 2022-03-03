@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('error',[ErrorController::class, 'sesion'])->name('sesion_error');
 
 Route::prefix('user')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::get('', [UserController::class, 'getAll']);
         Route::post('create', [UserController::class, 'create']);
 
@@ -53,7 +53,7 @@ Route::prefix('user')->group(function (){
 });
 
 Route::prefix('rol')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::prefix('{id}')->group(function (){
             Route::middleware(IdUserNumeric::class)->group(function (){
                 Route::get('users',[RoleController::class, 'users']);
@@ -63,7 +63,7 @@ Route::prefix('rol')->group(function (){
 });
 
 Route::prefix('date')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::get('', [DateController::class, 'getAll']);
         Route::post('create', [DateController::class, 'create']);
 
@@ -78,7 +78,7 @@ Route::prefix('date')->group(function (){
 });
 
 Route::prefix('task')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::post('create', [TaskController::class, 'create']);
         Route::get('', [TaskController::class, 'getAll']);
 
@@ -110,7 +110,7 @@ Route::prefix('login')->group(function (){
 });
 
 Route::prefix('product')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
        Route::post('create', [ProductController::class, 'create']);
        Route::get('', [ProductController::class, 'getAll']);
 
@@ -124,7 +124,7 @@ Route::prefix('product')->group(function (){
 });
 
 Route::prefix('category')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::post('create', [CategoryController::class, 'create']);
         Route::get('', [CategoryController::class, 'getAll']);
 
@@ -138,7 +138,7 @@ Route::prefix('category')->group(function (){
 });
 
 Route::prefix('provider')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::post('create', [ProviderController::class, 'create']);
         Route::get('', [ProviderController::class, 'getAll']);
 
@@ -152,7 +152,7 @@ Route::prefix('provider')->group(function (){
 });
 
 Route::prefix('invoice')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::post('create', [InvoiceController::class, 'create']);
 
         Route::prefix('{id}')->group(function (){
@@ -165,7 +165,15 @@ Route::prefix('invoice')->group(function (){
 });
 
 Route::prefix('line')->group(function (){
-    Route::middleware(Sesion::class)->group(function (){
+    Route::middleware('auth:api')->group(function (){
         Route::post('create', [LineController::class, 'create']);
     });
+});
+
+Route::get('estado', function (){
+   return response()->json([
+      'succes' => true,
+      'message' => 'estas en la api',
+      'data' => "esto es data de la api"
+   ]);
 });
